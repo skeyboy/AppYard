@@ -53,6 +53,14 @@ final class AppYardTests: XCTestCase {
             XCTAssertTrue(v is Studnt)
         }
     }
+    
+    func testUILetable() {
+        var viewController: UIViewController?
+        viewController.let {
+            $0.viewDidLoad()
+        }
+    }
+    
     static var allTests = [
         ("testExample", testExample),
         ("testStringLetable",testStringLetable),

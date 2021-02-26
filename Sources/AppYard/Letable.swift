@@ -96,23 +96,24 @@ extension Dictionary : Letable {
 
 public
 extension Optional where Wrapped : Letable {
-   
-    @inlinable
-    func `let`(_ block:(Wrapped)->Void) {
-        switch self {
-        case .none:
-            break
-        case .some(let value):
-            block(value)
-        }
-    }
-    
   var `let`:Wrapped {
         switch self {
         case .none:
             return Wrapped.defaultValue()
         case .some(let value):
             return value
+        }
+    }
+}
+
+public extension Optional {
+    @inlinable
+    func `let`(_  block: (Wrapped)->Void) {
+        switch self {
+        case .none:
+            break
+        case .some(let value):
+            block(value)
         }
     }
 }
