@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-public protocol Letable {
+public protocol Letable  {
     static func defaultValue() -> Self
 }
 
@@ -91,6 +91,13 @@ extension Array: Letable {
 extension Dictionary : Letable {
     public static func defaultValue() -> Dictionary<Key, Value> {
         return Dictionary()
+    }
+}
+
+
+extension Optional : Letable where Wrapped: Letable {
+    public static func defaultValue() -> Optional<Wrapped> {
+        return Optional.init(Wrapped.defaultValue())
     }
 }
 
