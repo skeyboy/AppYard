@@ -39,14 +39,12 @@ final class AppYardTests: XCTestCase {
             XCTAssert(false, "此时不会执行")
         }
         
-        p = Person(name:"Lee", age:32)
-        p.let { (v) in
-            XCTAssertTrue(v is Person)
-        }
+      
     }
     
     func testStructLetable() {
         var stu: Studnt?
+        
         XCTAssert(stu.let.id == -1 && stu.let.name.isEmpty, "stud 默认值:\(stu.let)")
         stu = Studnt(name: "lee", id: 32)
         stu.let { (v) in

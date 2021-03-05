@@ -1,65 +1,94 @@
-//
-//  File.swift
-//  
-//
-//  Created by sk on 2021/3/3.
-//
-
 import XCTest
 @testable import AppYard
 
-class PropertyDefaultTest: XCTestCase {
-    fileprivate  struct PropertyDefault : LetCodable {
-        static func defaultValue() -> PropertyDefaultTest.PropertyDefault {
-            return self.init()
-        }
-        
-        @DefaultOptionalWrapper()
-        var stringValue: String?
-        
-        @DefaultOptionalWrapper()
-        var boolValue: Bool?
-        
-        @DefaultOptionalWrapper(true)
-        var trueValue: Bool?
-        
-        @DefaultOptionalWrapper()
-        var person:Person?
+struct Video: Codable {
+    
+    @Default var id: Int
+    
+    @Default(22) var age: Int
+    
+    @Default var title: String
+    
+    @Default(true) var commentEnabled: Bool
+    
+    @Default var person: Person
+    
+    @Default var list:[Person]
+    
+    @Default var xx: Person?
+    
+    @Default(.b) var method: Method
+}
+
+enum Method: String ,Codable, DefaultValue {
+    static var defaultValue: Method {
+        return .a
+    }
+    case a
+    case b
+}
+struct Person : Codable ,DefaultValue {
+    @Default<String>
+    var name: String
+    @Default
+    var age: Int
+    public static let defaultValue = Person()
+}
+
+extension Optional : DefaultValue where Wrapped: Codable, Wrapped:DefaultValue  {
+    public typealias Value = Optional<Wrapped>
+    public static var defaultValue: Optional<Wrapped> {
+        return Optional.init(Wrapped.defaultValue as! Wrapped)
     }
     
-    fileprivate struct Person : LetCodable {
-        @DefaultOptionalWrapper("")
-        var name:String
-        @DefaultOptionalWrapper(0)
-        var age:Int
-        static func defaultValue() -> PropertyDefaultTest.Person {
-            return Person()
-        }
+}
+
+extension Array :DefaultValue where Element:DefaultValue , Element: Codable {
+    public typealias Value = Array<Element>
+    public static var defaultValue: Array<Element> {
+        return []
     }
-    
-    func testBoolProperty() {
-        let boolDefault:PropertyDefault = PropertyDefault.init()
-        XCTAssertFalse(boolDefault.boolValue.let,"默认数据应该是false 实际为\(boolDefault.boolValue.let)")
-    }
-    
-    func testBoolPropertyTrue() {
-        let trueBoolDefault: PropertyDefault = PropertyDefault()
+}
+
+
+extension Int: DefaultValue {
+    public static let defaultValue = 0
+}
+extension String: DefaultValue {
+    public static let defaultValue = ""
+}
+extension Bool: DefaultValue {
+    public static let defaultValue = false
+}
+final class MyLibraryTests: XCTestCase {
+    func testExample() {
+        // This is an example of a functional test case.
+        // Use XCTAssert and related functions to verify your tests produce the correct
+        // results.
         
-        XCTAssertTrue(trueBoolDefault.trueValue.let,"默认数据应该是true, 实际值为\(trueBoolDefault.trueValue.let)")
+        let json =   """
+        {"id": 12345,"title":"jsut title" ,"list":[{"name":"我是AAAA,只用名字"},{"age":18},{"age":28,"name":"Lee"}], "commentEnabled": 123}
+        """
+        let jsonData = json.data(using: .utf8)!
+        let value = try! JSONDecoder().decode(Video.self, from: jsonData)
+        let encode = try! JSONEncoder().encode(value)
+        
+        let decoder = try! JSONDecoder().decode(Video.self, from: encode)
+        decoder.id
+        let  reEncoder = try! JSONEncoder().encode(decoder)
+        let reDecoder = try! JSONDecoder().decode(Video.self, from: reEncoder)
     }
     
-    func testJson() {
-        let dict = ["trueValue":true]
-        let jsonData = try! JSONEncoder().encode(dict)
-        let jsonStr = String(data: jsonData, encoding: .utf8)
-       let decoderObj = try! JSONDecoder().decode(PropertyDefault.self, from: jsonData)
+    func testNext() {
+        let video = Video()
+        let videoEncodeValue = try! JSONEncoder().encode(video)
+        
+        let videoDecode = try! JSONDecoder().decode(Video.self, from: videoEncodeValue)
         
     }
-    
     
     static var allTests = [
-        ("testBoolProperty", testBoolProperty),
-        ("testBoolPropertyTrue",testBoolPropertyTrue),
-        ("testJson",testJson)
+        ("testExample", testExample),
+        ("testNext",testNext)
     ]
 }
