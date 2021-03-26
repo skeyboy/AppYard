@@ -9,17 +9,17 @@ import Foundation
 
 typealias LetCodable = Codable & Letable
 
-public protocol DefaultValue {
+public protocol DefaultCodableProtocol {
     associatedtype Value: Codable
     static var defaultValue: Value { get }
 }
 
 
 @propertyWrapper
-struct Default<T: DefaultValue> where T == T.Value {
-    var wrappedValue: T.Value
+public struct DefaultCodable<T: DefaultCodableProtocol> where T == T.Value {
+    public  var wrappedValue: T.Value
     var value:T.Value?
-    init(_ value: T.Value? = nil) {
+    public init(_ value: T.Value? = nil) {
         self.value = value
         if let value = value {
             wrappedValue = value
@@ -30,27 +30,27 @@ struct Default<T: DefaultValue> where T == T.Value {
     
 }
 
-extension Default : Encodable {
-    func encode(to encoder: Encoder) throws {
+extension DefaultCodable : Encodable {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
-      try  container.encode(wrappedValue)
+        try  container.encode(wrappedValue)
     }
 }
 
-extension Default: Decodable {
-    init(from decoder: Decoder) throws {
+extension DefaultCodable: Decodable {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-            wrappedValue = (try? container.decode(T.Value.self)) ?? T.defaultValue
+        wrappedValue = (try? container.decode(T.Value.self)) ?? T.defaultValue
     }
 }
 
 extension KeyedDecodingContainer {
     func decode<T>(
-        _ type: Default<T>.Type,
+        _ type: DefaultCodable<T>.Type,
         forKey key: Key
-    ) throws -> Default<T> where T: DefaultValue {
+    ) throws -> DefaultCodable<T> where T: DefaultCodableProtocol {
         let value = (try decodeIfPresent(type, forKey: key))
-        return value ?? Default(T.defaultValue)
+        return value ?? DefaultCodable(T.defaultValue)
     }
     
 }

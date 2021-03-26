@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Optional : DefaultValue where Wrapped: Codable, Wrapped:DefaultValue  {
+extension Optional : DefaultCodableProtocol where Wrapped: Codable, Wrapped:DefaultCodableProtocol  {
     public typealias Value = Optional<Wrapped>
     public static var defaultValue: Optional<Wrapped> {
         return Optional.init(Wrapped.defaultValue as! Wrapped)
@@ -15,7 +15,7 @@ extension Optional : DefaultValue where Wrapped: Codable, Wrapped:DefaultValue  
     
 }
 
-extension Array :DefaultValue where Element:DefaultValue , Element: Codable {
+extension Array :DefaultCodableProtocol where Element:DefaultCodableProtocol , Element: Codable {
     public typealias Value = Array<Element>
     public static var defaultValue: Array<Element> {
         return []
@@ -23,12 +23,12 @@ extension Array :DefaultValue where Element:DefaultValue , Element: Codable {
 }
 
 
-extension Int: DefaultValue {
+extension Int: DefaultCodableProtocol {
     public static let defaultValue = 0
 }
-extension String: DefaultValue {
+extension String: DefaultCodableProtocol {
     public static let defaultValue = ""
 }
-extension Bool: DefaultValue {
+extension Bool: DefaultCodableProtocol {
     public static let defaultValue = false
 }

@@ -3,34 +3,34 @@ import XCTest
 
 struct Video: Codable {
     
-    @Default var id: Int
+    @DefaultCodable var id: Int
     //只会在先encode 后decode才有效
-    @Default(22) var age: Int
+    @DefaultCodable(22) var age: Int
     
-    @Default var title: String
+    @DefaultCodable var title: String
     
-    @Default(true) var commentEnabled: Bool
+    @DefaultCodable(true) var commentEnabled: Bool
     
-    @Default var person: Person
+    @DefaultCodable var person: Person
     
-    @Default var list:[Person]
+    @DefaultCodable var list:[Person]
     
-    @Default var xx: Person?
+    @DefaultCodable var xx: Person?
     
-    @Default(.b) var method: Method
+    @DefaultCodable(.b) var method: Method
 }
 
-enum Method: String ,Codable, DefaultValue {
+enum Method: String ,Codable, DefaultCodableProtocol {
     static var defaultValue: Method {
         return .a
     }
     case a
     case b
 }
-struct Person : Codable ,DefaultValue {
-    @Default<String>
+struct Person : Codable ,DefaultCodableProtocol {
+    @DefaultCodable<String>
     var name: String
-    @Default
+    @DefaultCodable
     var age: Int
     public static let defaultValue = Person()
 }

@@ -103,7 +103,7 @@ extension Optional : Letable where Wrapped: Letable {
 
 public
 extension Optional where Wrapped : Letable {
-  var `let`:Wrapped {
+    var `let`:Wrapped {
         switch self {
         case .none:
             return Wrapped.defaultLetValue()
